@@ -29,14 +29,31 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+CMS_APPS = (
+    'cms',  # django CMS itself
+    'mptt',  # utilities for implementing a modified pre-order traversal tree
+    'menus',  # helper for model independent hierarchical website navigation
+    'south',  # intelligent schema and data migrations
+    'sekizai',  # for javascript and css management
+    'djangocms_file',
+    'djangocms_googlemap',
+    'djangocms_link',
+    'djangocms_picture',
+    'djangocms_teaser',
+    'djangocms_video',
+    'djangocms_text_ckeditor',  # note this needs to be above the 'cms' entry
+)
+
 INSTALLED_APPS = (
     'django.contrib.admin',
+    'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-)
+) + CMS_APPS
+
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -45,6 +62,23 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'cms.middleware.page.CurrentPageMiddleware',
+    'cms.middleware.user.CurrentUserMiddleware',
+    'cms.middleware.toolbar.ToolbarMiddleware',
+    'cms.middleware.language.LanguageCookieMiddleware',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.request',
+    'cms.context_processors.media',
+    'sekizai.context_processors.sekizai',
 )
 
 ROOT_URLCONF = 'test_project.urls'
@@ -80,3 +114,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+SITE_ID = 1
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates'),
+)
+
+CMS_TEMPLATES = (
+    ('base.html', 'Test CMS template'),
+)
